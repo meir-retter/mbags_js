@@ -11,9 +11,9 @@
 #container {
     display: grid;
     width: 33vw;
-    grid-gap: 0em;
-    grid-template-rows: repeat(var(--grid-rows), 2fr);
-    grid-template-columns: repeat(var(--grid-cols), 2fr);
+    grid-gap: 0;
+    grid-template-rows: repeat(var(--grid-rows));
+    grid-template-columns: repeat(var(--grid-cols));
 }
   
 .grid-item {
@@ -21,11 +21,4 @@
     border: 1px solid #ddd;
     text-align: center;
     aspect-ratio: 1 / 1;
-}
-
-/* Container that holds all the grids */
-.grid-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px; /* space between grids */
 }

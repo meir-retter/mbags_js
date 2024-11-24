@@ -38,7 +38,6 @@ function populateRows(rows, cols, goal_r, goal_c, mbag_r, mbag_c) {
         symbol = "."
       }
       cell.innerText = symbol;
-      container.appendChild(cell).className = "grid-item";
     }
   };
 };
