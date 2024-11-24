@@ -6,20 +6,21 @@ class GameGrid {
     this.goal_c = goal_c;
     this.mbag_r = mbag_r;
     this.mbag_c = mbag_c;
+
   }
 }
 
-const container = document.getElementById("container");
+const grid1 = document.getElementById("grid1");
 function makeRows(rows, cols) {
-  container.style.setProperty('--grid-rows', rows);
-  container.style.setProperty('--grid-cols', cols);
+  grid1.style.setProperty('--grid-rows', rows);
+  grid1.style.setProperty('--grid-cols', cols);
   for (r = 0; r < rows; r++) {
     for (c = 0; c < cols; c++) {
       cell_num = 3*r + c
       let cell = document.createElement("div");
       cell.setAttribute("id", "cell" + cell_num)
       cell.innerText = ".";
-      container.appendChild(cell).className = "grid-item";
+      grid1.appendChild(cell).className = "grid-item";
     }
   };
 };
