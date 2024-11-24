@@ -1,5 +1,3 @@
-
-
 class GameGrid {
   constructor(num_rows, num_cols, goal_r, goal_c, mbag_r, mbag_c) {
     this.num_rows = num_rows
