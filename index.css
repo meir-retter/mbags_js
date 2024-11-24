@@ -23,14 +23,14 @@
     width: 60%; /* Adjust container width */
 }
 
-#grid1 {
+#grid0 {
     display: grid;
     grid-template-rows: repeat(var(--grid-rows),  6fr);
     grid-template-columns: repeat(var(--grid-cols), 6fr);
     width: 30%;
 }
 
-#grid2 {
+#grid1 {
     display: grid;
     grid-template-rows: repeat(var(--grid-rows),  6fr);
     grid-template-columns: repeat(var(--grid-cols), 6fr);
