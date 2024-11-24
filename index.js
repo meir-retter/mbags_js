@@ -1,11 +1,4 @@
-console.log('Script Loaded...');
 
-function paint(color) {
-  console.log(color);
-  const circle = document.getElementById('circleID');
-  circle.style = `background-color:${color}`;
-  console.log(circle);
-}
 
 class GameGrid {
   constructor(num_rows, num_cols, goal_r, goal_c, mbag_r, mbag_c) {
