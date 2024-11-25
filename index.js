@@ -11,6 +11,10 @@ const ARROWS = {
   ArrowRight: [0, 1]
 }
 
+function in_pyrange(n, start, end) {
+  return n >= start && n < end;
+}
+
 
 class GameGrid {
   constructor(grid_index, goal_r, goal_c, mbag_r, mbag_c, walls) {
@@ -20,6 +24,7 @@ class GameGrid {
     this.mbag_r = mbag_r;
     this.mbag_c = mbag_c;
     this.walls = new Set(walls.map(arr => JSON.stringify(arr)));
+
     this.mbag_image_element = document.createElement("img");
     this.mbag_image_element.src = "favicon2.ico";
   }
@@ -86,7 +91,7 @@ class GameGrid {
         }
 
       }
-    };
+    }
   }
 }
 
@@ -108,7 +113,7 @@ document.addEventListener('keydown', function(event) {
     if (ARROWS.hasOwnProperty(event.key)) {
       let mbag_r_new = gg.mbag_r + ARROWS[event.key][0];
       let mbag_c_new = gg.mbag_c + ARROWS[event.key][1];
-      if (mbag_r_new >= 0 && mbag_r_new < numRows && mbag_c_new >= 0 && mbag_c_new < numCols) {
+      if (in_pyrange(mbag_r_new, 0, numRows) && in_pyrange(mbag_c_new, 0, numCols)) {
         if (!gg.has_wall(gg.mbag_r, gg.mbag_c, mbag_r_new, mbag_c_new)) {
           gg.mbag_r = mbag_r_new;
           gg.mbag_c = mbag_c_new;
