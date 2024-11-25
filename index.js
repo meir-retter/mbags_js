@@ -1,4 +1,4 @@
-const numGrids = 2;
+const numGrids = 3;
 const numRows = 3;
 const numCols = 3;
 
@@ -10,6 +10,8 @@ const ARROWS = {
   ArrowLeft: [0, -1],
   ArrowRight: [0, 1]
 }
+
+const container = document.getElementById("container");
 
 function in_pyrange(n, start, end) {
   return n >= start && n < end;
@@ -36,6 +38,12 @@ class GameGrid {
   }
 
 
+  create_grid_element() {
+    const grid_element = document.createElement("div");
+    grid_element.classList.add("grid");
+    grid_element.id = `grid${this.grid_index}`;
+    return grid_element;
+  }
 
   get_grid_element() {
     return document.getElementById("grid" + this.grid_index);
@@ -46,9 +54,11 @@ class GameGrid {
   }
 
   initialize_display() {
-    let grid_element = this.get_grid_element();
+    let grid_element = this.create_grid_element();
+
     grid_element.style.setProperty('--grid-rows', numRows);
     grid_element.style.setProperty('--grid-cols', numCols);
+    container.appendChild(grid_element);
     for (let r = 0; r < numRows; r++) {
       for (let c = 0; c < numCols; c++) {
         let cell_index = numCols*r + c
@@ -95,10 +105,12 @@ class GameGrid {
   }
 }
 
+
 walls0 = [[[0,0],[0,1]], [[1,0],[1,1]]];
 walls1 = [[[2,0],[2,1]]];
+walls2 = [[[2,0],[2,1]], [[1,1],[2,1]]];
 
-wallss = [walls0, walls1];
+wallss = [walls0, walls1, walls2];
 
 let grids = [];
 for (let i = 0; i < numGrids; i++) {
