@@ -1,6 +1,7 @@
-const numGrids = 3;
+const numGrids = 4;
 const numRows = 3;
 const numCols = 3;
+const wallProbability = .1;
 
 
 
@@ -15,6 +16,10 @@ const container = document.getElementById("container");
 
 function in_pyrange(n, start, end) {
   return n >= start && n < end;
+}
+
+function rand_int(n) {
+  return Math.floor(Math.random() * n);
 }
 
 
@@ -105,16 +110,34 @@ class GameGrid {
   }
 }
 
+function generate_walls(probability) {
+  let res = [];
+  for (let r = 0; r < numRows; r++) {
+    for (let c = 0; c < numCols-1; c++) {
+      if (Math.random() < probability) {
+        res.push([[r,c],[r,c+1]])
+      }
+    }
+  }
+  for (let r = 0; r < numRows-1; r++) {
+    for (let c = 0; c < numCols; c++) {
+      if (Math.random() < probability) {
+        res.push([[r,c],[r+1,c]])
+      }
+    }
+  }
+  return res;
 
-walls0 = [[[0,0],[0,1]], [[1,0],[1,1]]];
-walls1 = [[[2,0],[2,1]]];
-walls2 = [[[2,0],[2,1]], [[1,1],[2,1]]];
+}
 
-wallss = [walls0, walls1, walls2];
+let wallss = [];
+for (let i = 0; i < numGrids; i++) {
+  wallss.push(generate_walls(wallProbability));
+}
 
 let grids = [];
 for (let i = 0; i < numGrids; i++) {
-  let grid = new GameGrid(i, 0, 0,0,1, wallss[i]);
+  let grid = new GameGrid(i, rand_int(numRows), rand_int(numCols),rand_int(numRows),rand_int(numCols), wallss[i]);
   grid.initialize_display()
   grid.refresh_display()
   grids.push(grid)
