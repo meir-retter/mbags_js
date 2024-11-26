@@ -107,7 +107,6 @@ class GameGrid {
     this.mbag_image_element = document.createElement("img");
     this.mbag_image_element.src = "favicon2.ico";
     this.mbag_image_element.style.objectFit = "cover";
-    this.set_up_display()
 
   }
 
@@ -137,9 +136,13 @@ class GameGrid {
     return this.has_coord(r, c) && !this.has_wall(this.mbag_r, this.mbag_c, r, c);
   }
 
+  can_move_from_to(r0, c0, r1, c1) {
+    return this.has_coord(r1, c1) && !this.has_wall(r0, c0, r1, c1);
+  }
+
   peek_next(r0, c0, unit_vec) {
     let [r_next, c_next] = [r0 + unit_vec[0], c0 + unit_vec[1]];
-    if (this.can_move_to(r_next, c_next)) {
+    if (this.can_move_from_to(r0, c0, r_next, c_next)) {
       return [r_next, c_next];
     } else {
       return [r0, c0];
@@ -244,34 +247,27 @@ function get_neighbors(grids, multicell) {
 }
 
 function solve(grids) {
-  let start_multicell = Array.from(grids, (grid) => [grid.mbag_r, grid.mbag_c]);
-  console.log(start_multicell);
-  let goal_multicell = Array.from(grids, (grid) => [grid.goal_r, grid.goal_c]);
-  console.log(goal_multicell);
+  let start_multicell = JSON.stringify(Array.from(grids, (grid) => [grid.mbag_r, grid.mbag_c]));
+  let goal_multicell = JSON.stringify(Array.from(grids, (grid) => [grid.goal_r, grid.goal_c]));
   let explored = {};
   explored[start_multicell] = '';
 
   function expand_explored() {
     let newly_explored = {};
     Object.keys(explored).forEach(multicell => {
-      let neighbors = get_neighbors(grids, multicell);
-      // console.log('neighbors', neighbors);
-      zip(Object.keys(ARROWS), neighbors).forEach(([arrow_key, neighbor]) => {
-        // console.log(arrow_key);
-        // console.log(neighbor);
-        console.log(arrow_key);
-        console.log(neighbor)
-        if (!explored.hasOwnProperty(neighbor)) {
-          newly_explored[neighbor] = explored[multicell] + arrow_key[5]
+      let neighbors = get_neighbors(grids, JSON.parse(multicell));
+      let x = zip(Object.keys(ARROWS), neighbors);
+      x.forEach(([arrow_key, neighbor]) => {
+        let jsn = JSON.stringify(neighbor);
+        if (!explored.hasOwnProperty(jsn)) {
+          newly_explored[jsn] = explored[multicell] + arrow_key[5]
         }
       });
     });
     if (Object.keys(newly_explored).length > 0) {
       Object.assign(explored, newly_explored);
-      console.log(explored);
       if (!explored.hasOwnProperty(goal_multicell)) {
         expand_explored()
-        // console.log(explored);
       }
     }
   }
@@ -301,12 +297,12 @@ document.addEventListener('keydown', function(event) {
   }
 
 });
-
-// grids = generate_random_grids(5,3);
-grids = load_grids(puzzle1)
-console.log(get_neighbors(grids, [[2,2],[2,2]]));
-let s = solve(grids);
-console.log(s)
+let sol = "NO SOLUTION";
+while (sol === "NO SOLUTION") {
+  grids = generate_random_grids(6,4);
+  sol = solve(grids)
+}
+grids.forEach((grid) => grid.set_up_display());
 
 
 
