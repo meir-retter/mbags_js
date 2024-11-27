@@ -1,5 +1,5 @@
-const numGrids = 3;
-const wallProbability = .2;
+const numGrids = 5;
+const wallProbability = .1;
 
 const ARROWS = {
   ArrowUp: [-1, 0],
@@ -103,7 +103,7 @@ class GameGrid {
     this.mbag_r = mbag_r;
     this.mbag_c = mbag_c;
     this.mbag_start_r = mbag_r;
-    this.mbag_mbag_start_c = mbag_c;
+    this.mbag_start_c = mbag_c;
     this.walls = new Set(walls.map(arr => JSON.stringify(arr)));
 
     this.mbag_image_element = document.createElement("img");
@@ -116,6 +116,12 @@ class GameGrid {
     const grid_element = this.create_grid_element();
     container.appendChild(grid_element);
     this.refresh_display()
+  }
+
+  reset() {
+    this.mbag_r = this.mbag_start_r;
+    this.mbag_c = this.mbag_start_c;
+    this.refresh_display();
   }
 
 
@@ -308,7 +314,7 @@ document.addEventListener('keydown', function(event) {
 });
 let sol = NO_SOLUTION;
 while (sol === NO_SOLUTION) {
-  grids = generate_random_grids(8,4);
+  grids = generate_random_grids(4,2);
   sol = solve(grids)
 }
 grids.forEach((grid) => grid.set_up_display());
@@ -323,6 +329,9 @@ function refresh_solution_label() {
   solutionLabel.textContent = solve(grids);
 }
 
+function reset_grids() {
+  grids.forEach((grid) => grid.reset());
+}
 
 
 
