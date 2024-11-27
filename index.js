@@ -1,4 +1,4 @@
-const numGrids = 2;
+const numGrids = 3;
 const wallProbability = .2;
 
 const ARROWS = {
@@ -7,6 +7,8 @@ const ARROWS = {
   ArrowLeft: [0, -1],
   ArrowRight: [0, 1]
 }
+
+const NO_SOLUTION = 'NO SOLUTION FROM THIS POINT';
 
 function load_grids(puzzle) {
   if (!(puzzle.length === numGrids)) {
@@ -246,7 +248,14 @@ function get_neighbors(grids, multicell) {
   )
 }
 
+function all_solved(grids) {
+  return grids.every(grid => grid.is_solved())
+}
+
 function solve(grids) {
+  if (all_solved(grids)) {
+    return 'SOLVED'
+  }
   let start_multicell = JSON.stringify(Array.from(grids, (grid) => [grid.mbag_r, grid.mbag_c]));
   let goal_multicell = JSON.stringify(Array.from(grids, (grid) => [grid.goal_r, grid.goal_c]));
   let explored = {};
@@ -273,7 +282,7 @@ function solve(grids) {
   }
 
   expand_explored()
-  return explored[goal_multicell] || 'NO SOLUTION'
+  return explored[goal_multicell] || NO_SOLUTION
 
 
 
@@ -297,12 +306,24 @@ document.addEventListener('keydown', function(event) {
   }
 
 });
-let sol = "NO SOLUTION";
-while (sol === "NO SOLUTION") {
-  grids = generate_random_grids(6,4);
+let sol = NO_SOLUTION;
+while (sol === NO_SOLUTION) {
+  grids = generate_random_grids(8,4);
   sol = solve(grids)
 }
 grids.forEach((grid) => grid.set_up_display());
+
+
+
+let solutionLabel = document.getElementById("solutionLabel");
+solutionLabel.textContent = '';
+
+
+function refresh_solution_label() {
+  solutionLabel.textContent = solve(grids);
+}
+
+
 
 
 
