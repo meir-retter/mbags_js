@@ -10,7 +10,7 @@ const ARROWS = {
 
 const NO_SOLUTION = 'NO SOLUTION FROM THIS POINT';
 const SOLVED = 'SOLVED'
-
+console.log(window.location.href)
 function load_grids(puzzle) {
   if (!(puzzle.length === numGrids)) {
     throw "error";
@@ -259,6 +259,23 @@ function all_solved(grids) {
   return grids.every(grid => grid.is_solved())
 }
 
+function are_boring(grids) {
+  let goal_r_0 = grids[0].goal_r;
+  let goal_c_0 = grids[0].goal_c;
+  if (grids.every(grid => grid.goal_r === goal_r_0 && grid.goal_c === goal_c_0)) {
+    return true;
+  }
+
+  let delta_r_0 = grids[0].goal_r - grids[0].mbag_r;
+  let delta_c_0 = grids[0].goal_c - grids[0].mbag_c;
+
+  if (grids.every(grid => grid.goal_r - grid.mbag_r === delta_r_0 && grid.goal_c - grid.mbag_c === delta_c_0)) {
+    return true;
+  }
+
+  return false;
+}
+
 function solve(grids) {
   if (all_solved(grids)) {
     return SOLVED
@@ -267,22 +284,23 @@ function solve(grids) {
   let goal_multicell = JSON.stringify(Array.from(grids, (grid) => [grid.goal_r, grid.goal_c]));
   let explored = {};
   explored[start_multicell] = '';
-  let queue = [start_multicell];
+  let to_explore = [start_multicell];
 
   function expand_explored() {
-    let newly_explored = {};
-    Object.keys(explored).forEach(multicell => {
+    let new_items = [];
+    to_explore.forEach(multicell => {
       let neighbors = get_neighbors(grids, JSON.parse(multicell));
       let x = zip(Object.keys(ARROWS), neighbors);
       x.forEach(([arrow_key, neighbor]) => {
         let jsn = JSON.stringify(neighbor);
         if (!explored.hasOwnProperty(jsn)) {
-          newly_explored[jsn] = explored[multicell] + arrow_key[5]
+          explored[jsn] = explored[multicell] + arrow_key[5];
+          new_items.push(jsn)
         }
       });
     });
-    if (Object.keys(newly_explored).length > 0) {
-      Object.assign(explored, newly_explored);
+    if (new_items.length > 0) {
+      to_explore = new_items;
       if (!explored.hasOwnProperty(goal_multicell)) {
         expand_explored()
       }
@@ -319,8 +337,10 @@ document.addEventListener('keydown', function(event) {
 });
 let sol = NO_SOLUTION;
 while (sol === NO_SOLUTION) {
-  grids = generate_random_grids(3,3);
-  sol = solve(grids)
+  grids = generate_random_grids(3,2);
+  if (!are_boring(grids)) {
+    sol = solve(grids);
+  }
 }
 grids.forEach((grid) => grid.set_up_display());
 let solutionLabel = document.getElementById("solutionLabel");
