@@ -1,4 +1,4 @@
-const numGrids = 5;
+const numGrids = 3;
 const wallProbability = .1;
 
 const ARROWS = {
@@ -9,6 +9,7 @@ const ARROWS = {
 }
 
 const NO_SOLUTION = 'NO SOLUTION FROM THIS POINT';
+const SOLVED = 'SOLVED'
 
 function load_grids(puzzle) {
   if (!(puzzle.length === numGrids)) {
@@ -178,16 +179,16 @@ class GameGrid {
         }
         cell.className = "grid-item";
 
-        if (this.has_wall(r, c, r+1, c)) {
+        if (r === this.num_rows-1 || this.has_wall(r, c, r+1, c)) {
           cell.style.setProperty("border-bottom", "2px solid black")
         }
-        if (this.has_wall(r, c, r-1, c)) {
+        if (r === 0 || this.has_wall(r, c, r-1, c)) {
           cell.style.setProperty("border-top", "2px solid black")
         }
-        if (this.has_wall(r, c, r, c+1)) {
+        if (c === this.num_cols-1 || this.has_wall(r, c, r, c+1)) {
           cell.style.setProperty("border-right", "2px solid black")
         }
-        if (this.has_wall(r, c, r, c-1)) {
+        if (c === 0 || this.has_wall(r, c, r, c-1)) {
           cell.style.setProperty("border-left", "2px solid black")
         }
         grid_element.appendChild(cell);
@@ -260,12 +261,13 @@ function all_solved(grids) {
 
 function solve(grids) {
   if (all_solved(grids)) {
-    return 'SOLVED'
+    return SOLVED
   }
   let start_multicell = JSON.stringify(Array.from(grids, (grid) => [grid.mbag_r, grid.mbag_c]));
   let goal_multicell = JSON.stringify(Array.from(grids, (grid) => [grid.goal_r, grid.goal_c]));
   let explored = {};
   explored[start_multicell] = '';
+  let queue = [start_multicell];
 
   function expand_explored() {
     let newly_explored = {};
@@ -308,19 +310,19 @@ document.addEventListener('keydown', function(event) {
           gg.refresh_display();
         }
       })
+      if (all_solved(grids)) {
+        solutionLabel.textContent = SOLVED;
+      }
     }
   }
 
 });
 let sol = NO_SOLUTION;
 while (sol === NO_SOLUTION) {
-  grids = generate_random_grids(4,2);
+  grids = generate_random_grids(3,3);
   sol = solve(grids)
 }
 grids.forEach((grid) => grid.set_up_display());
-
-
-
 let solutionLabel = document.getElementById("solutionLabel");
 solutionLabel.textContent = '';
 
